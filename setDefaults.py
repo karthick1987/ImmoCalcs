@@ -2,15 +2,50 @@
 
 from PyQt5 import QtWidgets, uic
 
-class setSpinBoxValues:
+class setSpinBoxDefaults:
     def __init__(self, ui):
         self.ui = ui
+        self.setupSignals()
+        self.setValue()
+        self.findNebenKosten()
+        self.setupTable()
+
     def setValue(self):
-        self.ui.commission.setValue(3.57)
-        self.ui.faktor.setValue(0.5)
-        self.ui.landTax.setValue(3.5)
-        self.ui.notar.setValue(2.0)
-        self.ui.propertyValue.setValue(1000000)
-        self.ui.propertyValue.setGroupSeparatorShown(True);
+        self.ui.lbCommission.setGroupSeparatorShown(True)
+        self.ui.lbLandTax.setGroupSeparatorShown(True)
+        self.ui.lbNotar.setGroupSeparatorShown(True)
+        self.ui.sbPropertyValue.setGroupSeparatorShown(True)
+        self.ui.sbDeposit.setGroupSeparatorShown(True)
+        self.ui.sbTotal.setGroupSeparatorShown(True)
+        self.ui.sbNebenKosten.setGroupSeparatorShown(True)
+        self.ui.sbLoanAmount.setGroupSeparatorShown(True)
 
+        self.ui.sbCommission.setValue(3.57)
+        self.ui.sbLandTax.setValue(3.5)
+        self.ui.sbNotar.setValue(2.0)
+        self.ui.sbFaktor.setValue(0.5)
+        self.ui.sbPropertyValue.setValue(1000000)
+        self.ui.sbDeposit.setValue(120000)
+        self.ui.sbInterest.setValue(1.05)
+        self.ui.sbTerm.setValue(15)
 
+    def setupTable(self):
+        self.ui.tbEmi.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        header = ('Monthly Repayments', 'Paid Off', 'Remaining', 'Interest Paid')
+        self.ui.tbEmi.setHorizontalHeaderLabels(header)
+
+    def setupSignals(self):
+        self.ui.sbLandTax.valueChanged.connect(self.findNebenKosten)
+        self.ui.sbNotar.valueChanged.connect(self.findNebenKosten)
+        self.ui.sbCommission.valueChanged.connect(self.findNebenKosten)
+        self.ui.sbFaktor.valueChanged.connect(self.findNebenKosten)
+
+    def findNebenKosten(self):
+        self.ui.lbLandTax.setValue(0.01*self.ui.sbLandTax.value()*self.ui.sbPropertyValue.value())
+        self.ui.lbNotar.setValue(0.01*self.ui.sbNotar.value()*self.ui.sbPropertyValue.value())
+        self.ui.lbCommission.setValue(0.01*self.ui.sbCommission.value()*self.ui.sbPropertyValue.value())
+        self.ui.sbNebenKosten.setValue(self.ui.lbLandTax.value() + self.ui.lbNotar.value() + self.ui.lbCommission.value())
+        self.ui.sbNebenKosten.setValue(self.ui.sbNebenKosten.value() * self.ui.sbFaktor.value())
+        self.ui.sbLoanAmount.setValue((self.ui.sbNebenKosten.value() + self.ui.sbPropertyValue.value() - self.ui.sbDeposit.value()))
+
+        self.ui.sbTotal.setValue((self.ui.sbNebenKosten.value() + self.ui.sbPropertyValue.value()))

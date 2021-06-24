@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import sys
-from setDefaults import setSpinBoxValues
+from setDefaults import setSpinBoxDefaults
 from PyQt5 import QtWidgets, uic
 
 class Ui(QtWidgets.QMainWindow):
@@ -13,7 +13,8 @@ class Ui(QtWidgets.QMainWindow):
 app = QtWidgets.QApplication(sys.argv) # Create an instance of QtWidgets.QApplication
 window = Ui() # Create an instance of our class
 
-spb = setSpinBoxValues(window)
+spb = setSpinBoxDefaults(window)
 spb.setValue()
+spb.findNebenKosten()
 
 app.exec_() # Start the application
