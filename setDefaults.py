@@ -42,6 +42,7 @@ class setSpinBoxDefaults:
         self.calculateEMI()
 
     def calculateEMI(self):
+        self.ui.tbEmi.clear()
         start = self.ui.sbStart.value()
         end = self.ui.sbEnd.value()
         it = self.ui.sbIterations.value()
@@ -57,6 +58,9 @@ class setSpinBoxDefaults:
         self.ui.sbNotar.valueChanged.connect(self.findNebenKosten)
         self.ui.sbCommission.valueChanged.connect(self.findNebenKosten)
         self.ui.sbFaktor.valueChanged.connect(self.findNebenKosten)
+        self.ui.sbStart.valueChanged.connect(self.calculateEMI)
+        self.ui.sbEnd.valueChanged.connect(self.calculateEMI)
+        self.ui.sbIterations.valueChanged.connect(self.calculateEMI)
 
     def findNebenKosten(self):
         self.ui.lbLandTax.setValue(0.01*self.ui.sbLandTax.value()*self.ui.sbPropertyValue.value())
