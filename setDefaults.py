@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
 from PyQt5 import QtWidgets, uic
+from PyQt5.QtCore import Qt
+import numpy as np
 
 class setSpinBoxDefaults:
     def __init__(self, ui):
@@ -28,11 +30,27 @@ class setSpinBoxDefaults:
         self.ui.sbDeposit.setValue(120000)
         self.ui.sbInterest.setValue(1.05)
         self.ui.sbTerm.setValue(15)
+        self.ui.sbStart.setValue(1600)
+        self.ui.sbEnd.setValue(5000)
+        self.ui.sbIterations.setValue(18)
 
     def setupTable(self):
         self.ui.tbEmi.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         header = ('Monthly Repayments', 'Paid Off', 'Remaining', 'Interest Paid')
         self.ui.tbEmi.setHorizontalHeaderLabels(header)
+        self.ui.tbEmi.setRowCount(self.ui.sbIterations.value())
+        self.calculateEMI()
+
+    def calculateEMI(self):
+        start = self.ui.sbStart.value()
+        end = self.ui.sbEnd.value()
+        it = self.ui.sbIterations.value()
+        count = 0
+        for i in np.linspace(start,end,it, dtype=int):
+            qt_item = QtWidgets.QTableWidgetItem()
+            qt_item.setData(Qt.EditRole, i.item())
+            self.ui.tbEmi.setItem(count,0, qt_item)
+            count = count + 1
 
     def setupSignals(self):
         self.ui.sbLandTax.valueChanged.connect(self.findNebenKosten)

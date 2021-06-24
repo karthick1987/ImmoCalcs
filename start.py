@@ -14,7 +14,5 @@ app = QtWidgets.QApplication(sys.argv) # Create an instance of QtWidgets.QApplic
 window = Ui() # Create an instance of our class
 
 spb = setSpinBoxDefaults(window)
-spb.setValue()
-spb.findNebenKosten()
 
 app.exec_() # Start the application
