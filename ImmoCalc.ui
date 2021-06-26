@@ -32,6 +32,9 @@
     <property name="currentIndex">
      <number>0</number>
     </property>
+    <property name="movable">
+     <bool>true</bool>
+    </property>
     <widget class="QWidget" name="loanCalc">
      <attribute name="title">
       <string>Loan Calculations</string>
@@ -467,6 +470,12 @@
         <height>351</height>
        </rect>
       </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
       <property name="dragEnabled">
        <bool>true</bool>
       </property>
@@ -489,6 +498,9 @@
        <bool>true</bool>
       </attribute>
       <attribute name="horizontalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
        <bool>false</bool>
       </attribute>
       <attribute name="verticalHeaderCascadingSectionResizes">

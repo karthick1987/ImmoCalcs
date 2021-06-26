@@ -35,32 +35,69 @@ class setSpinBoxDefaults:
         self.ui.sbIterations.setValue(18)
 
     def setupTable(self):
-        self.ui.tbEmi.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-        header = ('Monthly Repayments', 'Paid Off', 'Remaining', 'Interest Paid')
-        self.ui.tbEmi.setHorizontalHeaderLabels(header)
         self.ui.tbEmi.setRowCount(self.ui.sbIterations.value())
+        #self.ui.tbEmi.set
         self.calculateEMI()
 
     def calculateEMI(self):
         self.ui.tbEmi.clear()
+        self.ui.tbEmi.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        header = ('Monthly Repayments', 'Paid Off', 'Remaining', 'Interest Paid')
+        self.ui.tbEmi.setHorizontalHeaderLabels(header)
+
         start = self.ui.sbStart.value()
         end = self.ui.sbEnd.value()
         it = self.ui.sbIterations.value()
+        loanAmount = self.ui.sbLoanAmount.value()
         count = 0
         for i in np.linspace(start,end,it, dtype=int):
+
+            emi=i.item()
+
+            # Monthly Repayments
             qt_item = QtWidgets.QTableWidgetItem()
+            qt_item.setTextAlignment(Qt.AlignHCenter)
             qt_item.setData(Qt.EditRole, i.item())
             self.ui.tbEmi.setItem(count,0, qt_item)
+
+            # Paid off
+            paidoff = QtWidgets.QTableWidgetItem()
+            paidoff.setTextAlignment(Qt.AlignHCenter)
+            terms = 12*self.ui.sbTerm.value()
+            interest = self.ui.sbInterest.value()/12/100
+            po = np.divide((emi - loanAmount*interest) * (np.power(1+interest,terms) - 1),interest)
+            paidoff.setData(Qt.EditRole, po.item())
+            self.ui.tbEmi.setItem(count,1, paidoff)
+
+            # Remaining
+            rem = QtWidgets.QTableWidgetItem()
+            rem.setTextAlignment(Qt.AlignHCenter)
+            rem.setData(Qt.EditRole, (loanAmount - po).item())
+            self.ui.tbEmi.setItem(count,2,rem)
+
+            # Interest Paid to date
+            intst = QtWidgets.QTableWidgetItem()
+            intst.setTextAlignment(Qt.AlignHCenter)
+
+            int2Date = emi*terms-(emi-loanAmount*interest)*(np.power(1+interest,terms)-1)/interest
+            intst.setData(Qt.EditRole, int2Date.item())
+            self.ui.tbEmi.setItem(count,3,intst)
+
             count = count + 1
+
 
     def setupSignals(self):
         self.ui.sbLandTax.valueChanged.connect(self.findNebenKosten)
         self.ui.sbNotar.valueChanged.connect(self.findNebenKosten)
         self.ui.sbCommission.valueChanged.connect(self.findNebenKosten)
+        self.ui.sbDeposit.valueChanged.connect(self.findNebenKosten)
         self.ui.sbFaktor.valueChanged.connect(self.findNebenKosten)
         self.ui.sbStart.valueChanged.connect(self.calculateEMI)
         self.ui.sbEnd.valueChanged.connect(self.calculateEMI)
         self.ui.sbIterations.valueChanged.connect(self.calculateEMI)
+        self.ui.sbInterest.valueChanged.connect(self.calculateEMI)
+        self.ui.sbTerm.valueChanged.connect(self.calculateEMI)
+        self.ui.sbLoanAmount.valueChanged.connect(self.calculateEMI)
 
     def findNebenKosten(self):
         self.ui.lbLandTax.setValue(0.01*self.ui.sbLandTax.value()*self.ui.sbPropertyValue.value())
