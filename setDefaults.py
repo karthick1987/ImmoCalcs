@@ -92,12 +92,14 @@ class setSpinBoxDefaults:
         self.ui.sbCommission.valueChanged.connect(self.findNebenKosten)
         self.ui.sbDeposit.valueChanged.connect(self.findNebenKosten)
         self.ui.sbFaktor.valueChanged.connect(self.findNebenKosten)
+        self.ui.sbPropertyValue.valueChanged.connect(self.findNebenKosten)
         self.ui.sbStart.valueChanged.connect(self.calculateEMI)
         self.ui.sbEnd.valueChanged.connect(self.calculateEMI)
         self.ui.sbIterations.valueChanged.connect(self.calculateEMI)
         self.ui.sbInterest.valueChanged.connect(self.calculateEMI)
         self.ui.sbTerm.valueChanged.connect(self.calculateEMI)
         self.ui.sbLoanAmount.valueChanged.connect(self.calculateEMI)
+        self.ui.sbPropertyValue.valueChanged.connect(self.calculateEMI)
 
     def findNebenKosten(self):
         self.ui.lbLandTax.setValue(0.01*self.ui.sbLandTax.value()*self.ui.sbPropertyValue.value())

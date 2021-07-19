@@ -617,7 +617,7 @@
      <attribute name="title">
       <string>Rent vs Buy</string>
      </attribute>
-     <widget class="QWidget" name="wgRentVsBuy" native="true">
+     <widget class="QCustomPlot" name="wgRentVsBuy" native="true">
       <property name="geometry">
        <rect>
         <x>9</x>
@@ -652,6 +652,14 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
