@@ -3,6 +3,7 @@
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import Qt
 import numpy as np
+import locale
 
 class setSpinBoxDefaults:
     def __init__(self, ui):
@@ -11,6 +12,7 @@ class setSpinBoxDefaults:
         self.setValue()
         self.findNebenKosten()
         self.setupTable()
+        locale.setlocale(locale.LC_ALL,'')
 
     def setValue(self):
         self.ui.lbCommission.setGroupSeparatorShown(True)
@@ -35,11 +37,10 @@ class setSpinBoxDefaults:
         self.ui.sbIterations.setValue(18)
 
     def setupTable(self):
-        self.ui.tbEmi.setRowCount(self.ui.sbIterations.value())
-        #self.ui.tbEmi.set
         self.calculateEMI()
 
     def calculateEMI(self):
+        self.ui.tbEmi.setRowCount(self.ui.sbIterations.value())
         self.ui.tbEmi.clear()
         self.ui.tbEmi.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         header = ('Monthly Repayments', 'Paid Off', 'Remaining', 'Interest Paid')
@@ -57,7 +58,7 @@ class setSpinBoxDefaults:
             # Monthly Repayments
             qt_item = QtWidgets.QTableWidgetItem()
             qt_item.setTextAlignment(Qt.AlignHCenter)
-            qt_item.setData(Qt.EditRole, i.item())
+            qt_item.setData(Qt.EditRole, f'{i.item():n}')
             self.ui.tbEmi.setItem(count,0, qt_item)
 
             # Paid off
@@ -66,13 +67,13 @@ class setSpinBoxDefaults:
             terms = 12*self.ui.sbTerm.value()
             interest = self.ui.sbInterest.value()/12/100
             po = np.divide((emi - loanAmount*interest) * (np.power(1+interest,terms) - 1),interest)
-            paidoff.setData(Qt.EditRole, po.item())
+            paidoff.setData(Qt.EditRole, f'{po.item():n}')
             self.ui.tbEmi.setItem(count,1, paidoff)
 
             # Remaining
             rem = QtWidgets.QTableWidgetItem()
             rem.setTextAlignment(Qt.AlignHCenter)
-            rem.setData(Qt.EditRole, (loanAmount - po).item())
+            rem.setData(Qt.EditRole, f'{(loanAmount - po).item():n}')
             self.ui.tbEmi.setItem(count,2,rem)
 
             # Interest Paid to date
@@ -80,7 +81,7 @@ class setSpinBoxDefaults:
             intst.setTextAlignment(Qt.AlignHCenter)
 
             int2Date = emi*terms-(emi-loanAmount*interest)*(np.power(1+interest,terms)-1)/interest
-            intst.setData(Qt.EditRole, int2Date.item())
+            intst.setData(Qt.EditRole, f'{int2Date.item():n}')
             self.ui.tbEmi.setItem(count,3,intst)
 
             count = count + 1
