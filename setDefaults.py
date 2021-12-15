@@ -2,16 +2,18 @@
 
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import Qt
+from loanPayments import loanBreakdown
 import numpy as np
 import locale
 
 class setSpinBoxDefaults:
     def __init__(self, ui):
         self.ui = ui
-        self.setupSignals()
         self.setValue()
+        self.lp = loanBreakdown(self.ui.sbLoanAmount_2.value(), self.ui.sbInterest_2.value(), self.ui.sbLoanDuration.value(), 0)
         self.findNebenKosten()
         self.setupTable()
+        self.setupSignals()
         locale.setlocale(locale.LC_ALL,'')
 
     def setValue(self):
@@ -36,8 +38,24 @@ class setSpinBoxDefaults:
         self.ui.sbEnd.setValue(5000)
         self.ui.sbIterations.setValue(18)
 
+        self.ui.sbLoanAmount_2.setValue(780000)
+        self.ui.sbLoanDuration.setValue(35)
+        self.ui.sbInterest_2.setValue(1.3)
+
     def setupTable(self):
         self.calculateEMI()
+
+    def findEMI(self):
+        self.lp.pri = self.ui.sbLoanAmount_2.value()
+        self.lp.monthlyInterest = self.ui.sbInterest_2.value()/12
+        self.lp.monthTerms = self.ui.sbLoanDuration.value()*12
+        self.lp.calculateMonthlyEMI()
+        self.ui.sbEMI.setValue(self.lp.repayments)
+        yrep = self.lp.repayments*12
+        yIntrep = self.lp.pri*self.ui.sbInterest_2.value()/100
+        self.ui.sbTilgung.setValue(100*(yrep - yIntrep)/self.lp.pri)
+        print(self.lp.pri)
+        print(self.lp.repayments)
 
     def calculateEMI(self):
         self.ui.tbEmi.setRowCount(self.ui.sbIterations.value())
@@ -101,6 +119,9 @@ class setSpinBoxDefaults:
         self.ui.sbTerm.valueChanged.connect(self.calculateEMI)
         self.ui.sbLoanAmount.valueChanged.connect(self.calculateEMI)
         self.ui.sbPropertyValue.valueChanged.connect(self.calculateEMI)
+        self.ui.sbLoanAmount_2.valueChanged.connect(self.findEMI)
+        self.ui.sbInterest_2.valueChanged.connect(self.findEMI)
+        self.ui.sbLoanDuration.valueChanged.connect(self.findEMI)
 
     def findNebenKosten(self):
         self.ui.lbLandTax.setValue(0.01*self.ui.sbLandTax.value()*self.ui.sbPropertyValue.value())

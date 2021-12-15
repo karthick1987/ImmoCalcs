@@ -16,7 +16,18 @@ class loanBreakdown:
         self.intToDate = []
         self.remainingPri = []
 
-        self.repaymentBreakDown()
+        if repayments == 0:
+            self.calculateMonthlyEMI()
+            self.repaymentBreakDown()
+        else:
+            self.repaymentBreakDown()
+
+    def calculateMonthlyEMI(self):
+        r = self.monthlyInterest/100
+        n = self.monthTerms-1
+        a = np.power(1+r,n)
+        P = self.pri
+        self.repayments = P*r*a/(a-1)
 
     def repaymentBreakDown(self):
         for i in range(self.monthTerms):
